@@ -39,9 +39,11 @@
 								<div class="w-full" >
 									<div class="flex w-full gap-x-2 pl-15 flex items-center">
 										<span><%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
-										<span><jstl:out value="${ table.nom }" /></span>
+										<a href="database?action=show&db_name=${ database.nom }&tb_name=${ table.nom }">
+											<jstl:out value="${ table.nom }" />
+										</a>
 										<div class="w-full flex justify-end">
-											<a href="database/table?action=new_line&db_name=${ database.nom }&tb_name=${ table.nom }"
+											<a href="database/table?db_name=${ database.nom }&tb_name=${ table.nom }"
 												class="new-tb-line-btn hover:bg-stone-50 rounded-xl p-1">
 												<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
 											</a>
@@ -58,40 +60,39 @@
 		<div id="right-container" class="w-full">
 			<div class="flex justify-between border-b">
 				<div class="bg-white flex items-center px-1 border-t-4">
-					<span><%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
-					<span>utilisateurs</span>
+					<jstl:if test='${ !empty table }'>
+						<span>
+							<%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
+							<span><jstl:out value="${ table.nom }" /></span>
+					 </jstl:if>
 				</div>
 				<button class="bg-black hover:bg-slate-700 text-white font-bold m-2 py-2 px-4 rounded-full">
 					<span>Modifier</span>
 				</button>
 			</div>
-			<table class="table-fixed border-collapse border">
-				<thead>
-				    <tr>
-				      <th class="border">id</th>
-				      <th class="border">nom</th>
-				      <th class="border">prenom</th>
-				      <th class="border">email</th>
-				      <th class="border">password</th>
-				    </tr>
-			  	</thead>
-			  	<tbody>
-				    <tr class="bg-white hover:bg-stone-500">
-				      <th class="border border-gray-500 px-2">1</th>
-				      <td class="border border-gray-500 px-2">Leano</td>
-				      <td class="border border-gray-500 px-2">Joanoro</td>
-				      <td class="border border-gray-500 px-2">leanojpanoro@gmail.com</td>
-				      <td class="border border-gray-500 px-2">123345652562223</td>
-				    </tr>
-				    <tr class="bg-white hover:bg-stone-500">
-				      <th class="border border-gray-500 px-2">2</th>
-				      <td class="border border-gray-500 px-2">Jeano</td>
-				      <td class="border border-gray-500 px-2">patrik</td>
-				      <td class="border border-gray-500 px-2">partik@gmail.com</td>
-				      <td class="border border-gray-500 px-2">123345652562223</td>
-				    </tr>
-				 </tbody>
-			</table>
+			<jstl:if test="${ !empty table.fields }">
+				<table class="table-fixed border-collapse border">
+					<thead>
+					    <tr>
+					    	<jstl:forEach var="field" items="${ table.fields }">
+					    		<th class="border"><jstl:out value="${ field }" /></th>
+					    	</jstl:forEach>
+					    </tr>
+				  	</thead>
+				  	<tbody>
+			  			<jstl:forEach var="line" items="${ table.lines }">
+				    		<tr class="bg-white hover:bg-stone-500">
+				    			<jstl:forEach var="col" items="${ line }">
+				    				<th class="border border-gray-500 px-2">
+				    					<jstl:out value="${ col }" />
+				    				</th>
+				    			</jstl:forEach>
+						    </tr>
+				    	</jstl:forEach>
+					 </tbody>
+				</table>
+			</jstl:if>
+			
 			
 			<jstl:if test="${ !empty error }">
 				<p class="text-red-500"><jstl:out value="${ error }"/></p>

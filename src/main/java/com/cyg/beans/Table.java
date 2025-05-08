@@ -10,6 +10,16 @@ public class Table {
 	private List<String> fields_type;
 	private String[] colones_name;
 	private String[] colones_type;
+	private List<List<String>> lines;
+	
+
+	public List<List<String>> getLines() {
+		return lines;
+	}
+
+	public void setLines(List<List<String>> lines) {
+		this.lines = lines;
+	}
 
 	public List<String> getFields() {
 		return fields;

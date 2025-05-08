@@ -13,4 +13,5 @@ public interface DatabaseDao {
 	List<Table> listTable(Database database) throws DaoException;
 	Table descibeTable(Table table, Database database) throws DaoException;
 	void inseterInto(Database database, Table table, String[] values) throws DaoException;
+	List<List<String>> listTableLines(Database database, Table table) throws DaoException;
 }

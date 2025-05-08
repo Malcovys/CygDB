@@ -254,4 +254,55 @@ public class DatabaseImpl implements DatabaseDao {
 		
 	}
 
+	@Override
+	public List<List<String>> listTableLines(Database database, Table table) throws DaoException {
+		List<List<String>> lines = new ArrayList<List<String>>();
+		
+		List<String> table_fields = table.getFields();
+		List<String> table_fields_type = table.getFields_type();
+		
+		Connection connexion = null;
+		Statement statement = null;
+		ResultSet resultat = null;
+		
+		try {
+			connexion = daoFactory.getConnection();
+			statement = connexion.createStatement();
+			
+			String query = "select * from "+database.getNom()+"."+table.getNom();
+			resultat = statement.executeQuery(query);
+			
+			while(resultat.next()) {
+				List<String> line = new ArrayList<String>();
+				
+				for(int i=0; i < table_fields.size(); i++) {
+					switch(table_fields_type.get(i)) 
+					{
+						case "int":
+							line.add(Integer.toString(resultat.getInt(table_fields.get(i))));
+							break;
+						default:
+							line.add(resultat.getNString(table_fields.get(i)));
+							break;
+					}
+				}
+				
+				lines.add(line);
+			}
+		} catch(SQLException e) {
+			throw new DaoException(e.getMessage());
+		}
+        finally {
+            try {
+                if (connexion != null) {
+                    connexion.close();  
+                }
+            } catch (SQLException e) {
+                throw new DaoException(e.getMessage());
+            }
+        }
+		
+		return lines;
+	}
+
 }

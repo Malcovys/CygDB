@@ -35,6 +35,20 @@ public class DatabaseServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			if(request.getParameter("action") != null) {
+				Table table = new Table();
+				table.setNom(request.getParameter("tb_name"));
+			
+				Database database = new Database();
+				database.setNom(request.getParameter("db_name"));
+				
+				databaseDao.descibeTable(table, database);
+				
+				table.setLines(databaseDao.listTableLines(database, table));
+				
+				request.setAttribute("table", table);
+			}
+			
 			request.setAttribute("databases", getDatabases());
 		} catch (DaoException e) {
 			request.setAttribute("error", e.getMessage());
