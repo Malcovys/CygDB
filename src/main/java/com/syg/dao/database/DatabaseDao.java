@@ -1,0 +1,14 @@
+package com.syg.dao.database;
+
+import java.util.List;
+
+import com.cyg.beans.Database;
+import com.cyg.beans.Table;
+import com.syg.dao.DaoException;
+
+public interface DatabaseDao {
+	void create(Database database) throws DaoException;
+	void createTable(Table table) throws DaoException;
+	List<Database> list() throws DaoException;
+	List<Table> listTable(Database database) throws DaoException;
+}
