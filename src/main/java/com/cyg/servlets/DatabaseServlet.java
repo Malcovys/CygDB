@@ -1,7 +1,7 @@
 package com.cyg.servlets;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,15 +35,7 @@ public class DatabaseServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			List<Database> databases;
- 			databases = databaseDao.list();
- 			
- 			for( Database database : databases) {
- 				List<Table> database_tables = databaseDao.listTable(database);
- 				database.setTables(database_tables);
- 			}
-			
-			request.setAttribute("databases", databases);
+			request.setAttribute("databases", getDatabases());
 		} catch (DaoException e) {
 			request.setAttribute("error", e.getMessage());
 		}
@@ -56,18 +48,58 @@ public class DatabaseServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			Database database = new Database();
-			database.setNom(request.getParameter("name"));
-	
-			databaseDao.create(database);
+			String request_action = request.getParameter("action");
 			
-			List<Database> databases = databaseDao.list();
-			request.setAttribute("databases", databases);
-		} catch(Exception e) {
+			switch(request_action) 
+			{
+				case "new_db":
+					createDatabase(request.getParameter("name"));
+					break;
+				case "new_tb":
+					createTable(request.getParameter("db-nom"), request.getParameter("tb-nom"), request.getParameterValues("col-nom"), request.getParameterValues("col-type"));
+					break;
+				default:
+					request.setAttribute("error", "Impossible de traité la requête");
+					break;
+			}	
+			
+			request.setAttribute("databases", getDatabases());
+		} 
+		catch (Exception e) {
 			request.setAttribute("error", e.getMessage());
 		}
-		
+	
 		this.getServletContext().getRequestDispatcher("/WEB-INF/templates/app.jsp").forward(request, response);
+	}
+	
+	private List<Database> getDatabases() throws DaoException {
+		List<Database> databases = databaseDao.list();
+		
+		for(Database db : databases) {
+				List<Table> database_tables = databaseDao.listTable(db);
+				db.setTables(database_tables);
+		}
+		
+		return databases;
+	}
+	
+	private void createDatabase(String name) throws DaoException {
+		Database new_database = new Database();
+		new_database.setNom(name);
+	
+		databaseDao.create(new_database);
+	}
+	
+	private void createTable(String database_name, String table_name, String[] table_colones, String[] colones_type) throws DaoException {
+		Table new_table = new Table();
+		new_table.setNom(table_name);
+		new_table.setColones_name(table_colones);
+		new_table.setColones_type(colones_type);
+		
+		Database database = new Database();
+		database.setNom(database_name);
+		
+		databaseDao.createTable(new_table, database);
 	}
 
 }

@@ -22,47 +22,36 @@
 			</div>
 			<div class="w-full bg-white py-3 px-2">
 				<jstl:forEach var="database" items="${ databases }">
-					<div class="w-full">
+					<div id="${ database.nom }" class="db w-full">
 						<div class="flex w-full gap-x-2 flex items-center">
-							<button class="hover:bg-stone-50 rounded-xl p-1">
-							<%@include file="/WEB-INF/statics/svgs/chevron_right.svg" %>
+							<button type="button" class="show-db-table-btn hover:bg-stone-50 rounded-xl p-1">
+								<%@include file="/WEB-INF/statics/svgs/chevron_right.svg" %>
 							</button>
 							<span><%@include file="/WEB-INF/statics/svgs/database.svg" %></span>
 							<span><jstl:out value="${ database.nom }" /></span>
 							<div class="w-full flex justify-end">
-								<button id="${ database.nom }" class="hover:bg-stone-50 rounded-xl p-1">
+								<button class="new-db-table-btn hover:bg-stone-50 rounded-xl p-1">
 									<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
 								</button>
 							</div>
 						</div>
+						<span class="db-table-container w-full" hidden=true>
+							<jstl:forEach var="table" items="${ database.tables }">
+								<div class="w-full" >
+									<div class="flex w-full gap-x-2 pl-15 flex items-center">
+										<span><%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
+										<span><jstl:out value="${ table.nom }" /></span>
+										<div class="w-full flex justify-end">
+											<button type="button" class="hover:bg-stone-50 rounded-xl p-1">
+												<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
+											</button>
+										</div>
+									</div>
+								</div>
+							</jstl:forEach>
+						</span>
 					</div>
 				</jstl:forEach>
-				
-				<div class="w-full" hidden=true>
-					<div class="flex w-full gap-x-2 flex items-center">
-						<button class="hover:bg-stone-50 rounded-xl p-1">
-						<%@include file="/WEB-INF/statics/svgs/keyboard_arrow_down.svg" %>
-						</button>
-						<span><%@include file="/WEB-INF/statics/svgs/database.svg" %></span>
-						<span>e_commerce</span>
-						<div class="w-full flex justify-end">
-							<button class="hover:bg-stone-50 rounded-xl p-1">
-								<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
-							</button>
-						</div>
-					</div>
-					<div class="w-full">
-						<div class="flex w-full gap-x-2 pl-15 flex items-center">
-							<span><%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
-							<span>utilisateurs</span>
-							<div class="w-full flex justify-end">
-								<button class="hover:bg-stone-50 rounded-xl p-1">
-									<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 		
@@ -109,64 +98,53 @@
 			</jstl:if>
 		</div>
 		
-		<div id="new-db-dialog" class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
-			<form class="flex flex-col gap-5 bg-white p-5 w-165 rounded shadow-lg p-5"
-				method="post" action="database"
-			>
+		<form id="new-db-form" method="post" action="database?action=new_db"
+			 class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
+			<div class="flex flex-col gap-5 bg-white p-5 w-165 rounded shadow-lg p-5">
 				<div class="flex flex-col gap-[35px] px-5">
 					<div class="border-b flex justify-between">
 						<span class="font-semibold">Nouvelle base de donnée</span>
-						<button class="btn-close"><%@include file="/WEB-INF/statics/svgs/close.svg" %></button>
+						<button type="button" class="btn-close"><%@include file="/WEB-INF/statics/svgs/close.svg" %></button>
 					</div>
 					<div class="flex flex-col items-center gap-2 w-full">
 						<span>Nom de la base de donnée</span>
 						<input name="name" type="text" placeholder="exemple" class="w-full border border-neutral-200 rounded-md p-1" required/>
 					</div>
 				</div>
-				<button class="submit-btn w-full bg-black hover:bg-slate-700 text-white font-bold py-1 px-20 rounded-[30px]">
+				<button type="submit" class="submit-btn w-full bg-black hover:bg-slate-700 text-white font-bold py-1 px-20 rounded-[30px]">
 					<span>Créer</span>
 				</button>
-			</form>
-		</div>
+			</div>
+		</form>
 		
-		<div class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
+		<form id="new-table-form" method="post" action="database?action=new_tb"
+			class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
 			<div class="flex flex-col gap-5 bg-white p-5 w-165 rounded shadow-lg p-5">
 				<div class="flex flex-col gap-[35px] px-5">
 					<div class="border-b flex justify-between">
 						<span class="font-semibold">Nouvelle table</span>
-						<span><%@include file="/WEB-INF/statics/svgs/close.svg" %></span>
+						<button type="button" class="btn-close" ><%@include file="/WEB-INF/statics/svgs/close.svg" %></button>
 					</div>
 					<div class="flex flex-col items-center gap-2 w-full">
-						<span>Nom de la base de donnée</span>
-						<input type="text" class="w-full border border-neutral-200 rounded-md p-1" />
+						<span>Nom de la table</span>
+						<input name= "tb-nom" type="text" class="w-full border border-neutral-200 rounded-md p-1" required/>
 					</div>
 					<div class="flex flex-col gap-2">
 						<div class="flex items-center justify-between border-b-2 border-neutral-200">
 							<span>Colones</span>
-							<button class="hover:bg-stone-50 rounded-xl p-1">
+							<button id="add-colone-btn" type="button" class="hover:bg-stone-50 rounded-xl p-1">
 								<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
 							</button>
 						</div>
-						<div class="flex px-5 py-3 bg-[#F5F5F5]">
-							<div>
-								<label>Nom :</label>
-								<input class="border-b border-neutral-200" type="text" value="Colone1">
-							</div>
-							<div>
-								<label>Type de donnée :</label>
-								<select class="border-b border-neutral-200">
-									<option value="VARCHAR(255)">VARCHAR(255)</option>
-									<option value="INTEGER">INTEGER</option>
-								</select>
-							</div>
+						<div id="colone-container" class="flex flex-col gap-2">
 						</div>
 					</div>
 				</div>
-				<button class="w-full bg-black hover:bg-slate-700 text-white font-bold py-1 px-20 rounded-[30px]">
+				<button type="submit" class="submit-btn w-full bg-black hover:bg-slate-700 text-white font-bold py-1 px-20 rounded-[30px]">
 					<span>Créer</span>
 				</button>
 			</div>
-		</div>
+		</form>
 
 		<div class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
 			<div class="flex flex-col gap-5 bg-white p-5 w-165 rounded shadow-lg p-5">

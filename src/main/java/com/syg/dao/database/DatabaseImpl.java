@@ -24,7 +24,7 @@ public class DatabaseImpl implements DatabaseDao {
 			connexion = daoFactory.getConnection();
 			statement = connexion.createStatement();
 			
-			String query = "CREATE DATABASE " +  database.getNom();
+			String query = "create database " +  database.getNom();
 			statement.execute(query);
 			
 			connexion.commit();
@@ -61,7 +61,7 @@ public class DatabaseImpl implements DatabaseDao {
 			connexion = daoFactory.getConnection();
 			statement = connexion.createStatement();
 			
-			String query = "SHOW DATABASES;";
+			String query = "show databases where `database` not in('information_schema', 'mysql', 'performance_schema','sys');";
 			resultat = statement.executeQuery(query);
 			
 			while(resultat.next()) {
@@ -99,17 +99,14 @@ public class DatabaseImpl implements DatabaseDao {
 			connexion = daoFactory.getConnection();
 			statement = connexion.createStatement();
 			
-			String query = "SHOW TABLES IN " + database.getNom();
+			String query = "show TABLES in " + database.getNom();
 			resultat = statement.executeQuery(query);
 			
-			int index = 0;
 			while(resultat.next()) {
 				Table _table = new Table();
-				_table.setNom(resultat.getNString(index));
+				_table.setNom(resultat.getNString("Tables_in_"+database.getNom()));
 				
 				tables.add(_table);
-				
-				index++;
 			}
 			
 		} catch(SQLException e) {
@@ -128,8 +125,46 @@ public class DatabaseImpl implements DatabaseDao {
 	}
 
 	@Override
-	public void createTable(Table table) throws DaoException {
-		// TODO Auto-generated method stub
+	public void createTable(Table table, Database database) throws DaoException {
+		Connection connexion = null;
+		Statement statement = null;
+		
+		String colones = new String();
+		String[] table_colones_name = table.getColones_name();
+		String[] table_colones_type = table.getColones_type();
+		
+		for(int i = 0; i < table_colones_name.length; i++) {
+			colones += table_colones_name[i] + " " + table_colones_type[i] + (i == table_colones_name.length - 1 ? "" : ",");
+		}
+		
+		try {
+			connexion = daoFactory.getConnection();
+			statement = connexion.createStatement();
+			
+			String query = "create table " +  database.getNom() +"."+table.getNom() + " ( " + colones + " )engine=InnoDB default CHARSET=utf8mb4 collate=utf8mb4_0900_ai_ci;";
+			System.out.println(query);
+			
+			statement.execute(query);
+			
+			connexion.commit();
+		} catch(SQLException e) {
+			try {
+				if(connexion != null) {
+					connexion.rollback();
+				}
+			} catch(SQLException e2) {
+				throw new DaoException(e.getMessage());
+			}
+			throw new DaoException(e.getMessage());
+		} finally {
+			try {
+				if(connexion != null) {
+					connexion.close();
+				}
+			} catch(SQLException e) {
+				throw new DaoException(e.getMessage());
+			}
+		}
 		
 	}
 

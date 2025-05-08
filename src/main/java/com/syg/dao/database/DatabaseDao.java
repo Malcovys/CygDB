@@ -8,7 +8,7 @@ import com.syg.dao.DaoException;
 
 public interface DatabaseDao {
 	void create(Database database) throws DaoException;
-	void createTable(Table table) throws DaoException;
+	void createTable(Table table, Database database) throws DaoException;
 	List<Database> list() throws DaoException;
 	List<Table> listTable(Database database) throws DaoException;
 }

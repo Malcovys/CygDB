@@ -1,11 +1,11 @@
-/**
+	/**
  *  Creation de table
  */
-const newDatabaseDialog = document.getElementById("new-db-dialog");
 const newDatabaseButton = document.getElementById("new-db-btn");
-const closeDialogBtn = newDatabaseDialog.getElementsByClassName("btn-close")[0];
-
 newDatabaseButton.addEventListener("click", () => {
+	const newDatabaseDialog = document.getElementById("new-db-form");
+	const closeDialogBtn = newDatabaseDialog.getElementsByClassName("btn-close")[0];
+
 	newDatabaseDialog.hidden = false;
 	
 	const handleCloseDialog = closeDialogBtn.addEventListener("click", () => {
@@ -14,3 +14,72 @@ newDatabaseButton.addEventListener("click", () => {
 		closeDialogBtn.removeEventListener("click", handleCloseDialog);
 	});
 });
+
+/**
+ *  Show tables and show newtable form
+ */
+const databases = document.getElementsByClassName("db");
+const newDBTableDialog = document.getElementById("new-table-form");
+for(let i = 0; i < databases.length; i++) {
+	const database = databases[i];
+	const tablesContainer = database.getElementsByClassName("db-table-container")[0];
+	
+	// affichage de la liste des tables
+	const showDBTablesBtn = database.getElementsByClassName("show-db-table-btn")[0];
+	showDBTablesBtn.addEventListener("click", () => {
+		console.log(database.id);
+		tablesContainer.hidden = !tablesContainer.hidden;
+	});
+	
+	// affichage du dialog new table
+	const newDBTableBtns = database.getElementsByClassName("new-db-table-btn")[0];	
+	newDBTableBtns.addEventListener("click", () => {
+			// ajout d'un champ referent le nom de la base de donnée qui vas contenir la table
+			const dbNameReferencer = document.createElement("input");
+			dbNameReferencer.type = 'text';
+			dbNameReferencer.name = "db-nom";
+			dbNameReferencer.setAttribute('value', database.id); 
+			dbNameReferencer.hidden = true;
+			newDBTableDialog.appendChild(dbNameReferencer); //
+			
+			newDBTableDialog.hidden = false;
+			
+			// fermeture du formulaure
+			const closeDialogBtn = newDBTableDialog.getElementsByClassName("btn-close")[0];
+			const handleCloseDialog = closeDialogBtn.addEventListener("click", () => {
+				newDBTableDialog.hidden = true;
+				/*newDBTableDialog.removeChild(dbNameInput);*/
+				closeDialogBtn.removeEventListener("click", handleCloseDialog);
+			});
+	});
+}
+
+/*
+ * New DB table colone manager 
+ */
+const newTableColoneContainer = document.getElementById("colone-container");
+const addTableColoneBtn = document.getElementById("add-colone-btn");
+addTableColoneBtn.addEventListener("click", () => {
+    const newColone = `
+        <div class="db-colone flex px-5 py-3 bg-[#F5F5F5]">
+            <div>
+                <label>Nom :</label>
+                <input name="col-nom" class="border-b border-neutral-200" type="text" value="Colone1" required />
+            </div><div>
+                <label>Type de donn&eacutee :</label>
+                <select name="col-type" class="border-b border-neutral-200" required>
+                    <option value="INTEGER">INT</option>
+                    <option value="VARCHAR(255)">VARCHAR(255)</option>
+                </select>
+            </div>
+        </div>
+	`;
+    newTableColoneContainer.insertAdjacentHTML("beforeend", newColone);
+});
+
+
+
+
+
+
+
