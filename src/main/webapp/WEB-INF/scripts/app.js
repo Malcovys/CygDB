@@ -1,4 +1,4 @@
-	/**
+ 	/**
  *  Creation de table
  */
 const newDatabaseButton = document.getElementById("new-db-btn");
@@ -77,7 +77,30 @@ addTableColoneBtn.addEventListener("click", () => {
     newTableColoneContainer.insertAdjacentHTML("beforeend", newColone);
 });
 
-
+/*
+ * New DB table line
+ */
+/*const dbTableContainers = document.getElementsByClassName("db-table-container");
+for(let i = 0; i < dbTableContainers.length; i++) {
+	const tableContainer = dbTableContainers[i];
+	const newTableLineBtns = tableContainer.getElementsByClassName("new-tb-line-btn");
+	console.log(newTableLineBtns)
+	
+	for(let j=0; j < newTableLineBtns.length; j++) {
+		const newTableLineBtn = newTableLineBtns[j];
+		newTableLineBtn.addEventListener("click", () => {
+				const newTableLigneForm = document.getElementById("add-table-line");
+				
+				newTableLigneForm.hidden = false;
+				
+				const closeFormBtn = newTableLigneForm.getElementsByClassName("btn-close")[0];
+				const handleCloseForm = closeFormBtn.addEventListener("click", () => {
+					newTableLigneForm.hidden = true;
+					closeFormBtn.removeEventListener("click", handleCloseForm);
+				});
+		})
+	}
+}*/
 
 
 

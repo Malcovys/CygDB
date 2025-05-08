@@ -6,7 +6,6 @@
 	    <meta charset="UTF-8" />
 	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-		<meta charset="UTF-8">
 		<title>Cyg</title>
 	</head>
 	<body class="flex flex-row gap-[10px] bg-[#F5F5F5] mt-1">
@@ -42,9 +41,10 @@
 										<span><%@include file="/WEB-INF/statics/svgs/table.svg" %></span>
 										<span><jstl:out value="${ table.nom }" /></span>
 										<div class="w-full flex justify-end">
-											<button type="button" class="hover:bg-stone-50 rounded-xl p-1">
+											<a href="database/table?action=new_line&db_name=${ database.nom }&tb_name=${ table.nom }"
+												class="new-tb-line-btn hover:bg-stone-50 rounded-xl p-1">
 												<%@include file="/WEB-INF/statics/svgs/add_circle.svg" %>
-											</button>
+											</a>
 										</div>
 									</div>
 								</div>
@@ -145,40 +145,6 @@
 				</button>
 			</div>
 		</form>
-
-		<div class="z-10 absolute h-full w-full flex justify-center items-center" hidden=true>
-			<div class="flex flex-col gap-5 bg-white p-5 w-165 rounded shadow-lg p-5">
-				<div class="flex flex-col gap-[35px] px-5">
-					<div class="border-b flex justify-between">
-						<span class="font-semibold">Ajouter une nouvelle ligne</span>
-						<span><%@include file="/WEB-INF/statics/svgs/close.svg" %></span>
-					</div>
-					<div class="flex justify-center w-full">
-						<span>Table selectionnée: utilisateurs</span>
-					</div>
-					<div class="flex flex-col gap-2">
-						<div class="items-center border-b-2 border-neutral-200">
-							<span>Données</span>
-						</div>
-						<div class="flex px-5 py-3 bg-[#F5F5F5] gap-5">
-							<label>id (INTEGER):</label>
-							<input class="border-b border-neutral-200" type="text" value="Colone1">
-						</div>
-						<div class="flex px-5 py-3 bg-[#F5F5F5] gap-5">
-							<label>nom (VARCHAR, 255) :</label>
-							<input class="border-b border-neutral-200" type="text" value="Colone1">
-						</div>
-						<div class="flex px-5 py-3 bg-[#F5F5F5] gap-5">
-							<label>prenom (VARCHAR, 255) :</label>
-							<input class="border-b border-neutral-200" type="text" value="Colone1">
-						</div>
-					</div>
-				</div>
-				<button class="w-full bg-black hover:bg-slate-700 text-white font-bold py-1 px-20 rounded-[30px]">
-					<span>Enregistrer</span>
-				</button>
-			</div>
-		</div>	
 	</body>
-	<script type="text/javascript"><%@include file="/WEB-INF/scripts.js" %></script>
+	<script type="text/javascript"><%@include file="/WEB-INF/scripts/app.js" %></script>
 </html>

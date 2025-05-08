@@ -9,4 +9,14 @@
 		<servlet-name>DatabaseServlet</servlet-name>
 		<url-pattern>/database</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>TableServlet</servlet-name>
+		<servlet-class>com.cyg.servlets.TableServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TableServlet</servlet-name>
+		<url-pattern>/database/table</url-pattern>
+	</servlet-mapping>
+
 </web-app>

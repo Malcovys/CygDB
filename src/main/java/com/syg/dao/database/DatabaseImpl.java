@@ -26,7 +26,6 @@ public class DatabaseImpl implements DatabaseDao {
 			
 			String query = "create database " +  database.getNom();
 			statement.execute(query);
-			
 			connexion.commit();
 		} catch(SQLException e) {
 			try {
@@ -145,7 +144,6 @@ public class DatabaseImpl implements DatabaseDao {
 			System.out.println(query);
 			
 			statement.execute(query);
-			
 			connexion.commit();
 		} catch(SQLException e) {
 			try {
@@ -153,7 +151,7 @@ public class DatabaseImpl implements DatabaseDao {
 					connexion.rollback();
 				}
 			} catch(SQLException e2) {
-				throw new DaoException(e.getMessage());
+				throw new DaoException(e2.getMessage());
 			}
 			throw new DaoException(e.getMessage());
 		} finally {
@@ -164,6 +162,94 @@ public class DatabaseImpl implements DatabaseDao {
 			} catch(SQLException e) {
 				throw new DaoException(e.getMessage());
 			}
+		}
+		
+	}
+
+	@Override
+	public Table descibeTable(Table table, Database database) throws DaoException {
+		Connection connexion = null;
+		Statement statement = null;
+		ResultSet resultat = null;
+		
+		try {
+			connexion = daoFactory.getConnection();
+			statement = connexion.createStatement();
+			
+			String query = "describe " + database.getNom()+"."+table.getNom();
+			resultat = statement.executeQuery(query);
+			
+			List<String> table_fileds = new ArrayList<String>();
+			List<String> table_fields_type = new ArrayList<String>();
+			
+			while(resultat.next()) {
+				table_fileds.add(resultat.getNString("Field"));
+				table_fields_type.add(resultat.getNString("Type"));
+			}
+			
+			table.setFields(table_fileds);
+			table.setFields_type(table_fields_type);
+			
+		} catch(SQLException e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+	        try {
+	            if (connexion != null) {
+	                connexion.close();  
+	            }
+	        } catch (SQLException e) {
+	            throw new DaoException(e.getMessage());
+	        }			
+		}
+			
+		return table;	
+	}
+
+	@Override
+	public void inseterInto(Database database, Table table, String[] values) throws DaoException {
+		List<String> table_fields = table.getFields();
+		List<String> table_fileds_type = table.getFields_type();
+		
+		Connection connexion = null;
+		PreparedStatement preparedStatement = null;
+		
+		String fieldsString = new String();
+		String valueSlots = new String();
+		
+		for(int i =0; i < table_fields.size(); i++) {
+			fieldsString +=  table_fields.get(i) + (i == table_fields.size() - 1 ? "" : ",");
+			valueSlots += (i == table_fields.size() - 1 ? "?" : "?,");
+		}
+		
+		try {
+			connexion = daoFactory.getConnection();
+			preparedStatement = connexion.prepareStatement("insert into "+database.getNom()+"."+table.getNom()+"("+fieldsString+") values("+valueSlots+");");
+			
+			for(int i=0; i < table_fields.size(); i++) {
+				switch(table_fileds_type.get(i)) 
+				{
+					case "int":
+						preparedStatement.setInt(i+1, Integer.parseInt(values[i]));
+						break;
+					default:
+						preparedStatement.setString(i+1, values[i]);
+						break;
+				}
+				
+			}
+			
+			preparedStatement.executeUpdate();
+			connexion.commit();
+		} catch(SQLException e) {
+			throw new DaoException(e.getMessage());
+		} finally {
+	        try {
+	            if (connexion != null) {
+	                connexion.close();  
+	            }
+	        } catch (SQLException e) {
+	            throw new DaoException(e.getMessage());
+	        }			
 		}
 		
 	}

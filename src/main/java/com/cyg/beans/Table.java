@@ -1,12 +1,31 @@
 package com.cyg.beans;
 
-import java.util.*;
+import java.util.List;
+
+//import java.util.*;
 
 public class Table {
 	private String nom;
+	private List<String> fields;
+	private List<String> fields_type;
 	private String[] colones_name;
 	private String[] colones_type;
-	
+
+	public List<String> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<String> fields) {
+		this.fields = fields;
+	}
+
+	public List<String> getFields_type() {
+		return fields_type;
+	}
+
+	public void setFields_type(List<String> fields_type) {
+		this.fields_type = fields_type;
+	}
 
 	public String[] getColones_name() {
 		return colones_name;
